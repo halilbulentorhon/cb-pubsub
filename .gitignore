@@ -1,0 +1,16 @@
+# IDE
+.idea/
+.vscode/
+
+# Go
+*.log
+*.out
+vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage.out
+*.cover
