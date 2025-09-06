@@ -189,31 +189,40 @@ type CouchbaseConfig struct {
 ### Building and Testing
 
 ```bash
-# Install dependencies
-go mod download
-
 # Generate mocks
 make mocks
 
-# Run tests
-go test ./...
+# Run tests  
+make test
 
-# Run tests with coverage
-go test -cover ./...
-
-# Clean test cache
-go clean -testcache
-
-# Clean generated mocks
-make clean-mocks
+# Clean everything
+make clean
 ```
 
 ### Available Make Commands
 
 ```bash
-make mocks       # Generate mocks for testing
-make clean-mocks # Remove all generated mock files
+make mocks         # Generate mocks for testing
+make test          # Run tests with race detection
+make fieldalignment # Check struct field alignment
+make clean         # Clean build artifacts and mocks
 ```
+
+### Releases
+
+To create a release:
+
+1. **Create Tag** (GitHub UI):
+   - Go to Actions → "Create Tag" → "Run workflow"
+   - Enter tag name (e.g., `v1.0.0`)
+   - Click "Run workflow"
+
+2. **Create Release** (GitHub UI):
+   - Go to Actions → "Release" → "Run workflow"  
+   - Enter same tag name (e.g., `v1.0.0`)
+   - Click "Run workflow"
+
+Both workflows will run tests before creating tag/release.
 
 ## Examples
 

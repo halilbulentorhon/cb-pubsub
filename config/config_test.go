@@ -15,7 +15,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 			input: PubSubConfig{},
 			expected: PubSubConfig{
 				PollIntervalSeconds:    1,
-				SelfDocTTLSeconds:      30,
 				CleanupIntervalSeconds: 15,
 				SubscribeRetryAttempts: 3,
 				CleanupRetryAttempts:   5,
@@ -29,7 +28,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 			name: "partial config keeps existing values",
 			input: PubSubConfig{
 				PollIntervalSeconds: 5,
-				SelfDocTTLSeconds:   60,
 				CouchbaseConfig: CouchbaseConfig{
 					Host:       "localhost",
 					Username:   "admin",
@@ -38,7 +36,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 			},
 			expected: PubSubConfig{
 				PollIntervalSeconds:    5,
-				SelfDocTTLSeconds:      60,
 				CleanupIntervalSeconds: 15,
 				SubscribeRetryAttempts: 3,
 				CleanupRetryAttempts:   5,
@@ -55,7 +52,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 			name: "negative values get defaults",
 			input: PubSubConfig{
 				PollIntervalSeconds:    -1,
-				SelfDocTTLSeconds:      -5,
 				CleanupIntervalSeconds: 0,
 				SubscribeRetryAttempts: -2,
 				CleanupRetryAttempts:   0,
@@ -66,7 +62,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 			},
 			expected: PubSubConfig{
 				PollIntervalSeconds:    1,
-				SelfDocTTLSeconds:      30,
 				CleanupIntervalSeconds: 15,
 				SubscribeRetryAttempts: 3,
 				CleanupRetryAttempts:   5,
@@ -85,9 +80,6 @@ func TestPubSubConfig_ApplyDefaults(t *testing.T) {
 
 			if cfg.PollIntervalSeconds != tt.expected.PollIntervalSeconds {
 				t.Errorf("PollIntervalSeconds = %d, want %d", cfg.PollIntervalSeconds, tt.expected.PollIntervalSeconds)
-			}
-			if cfg.SelfDocTTLSeconds != tt.expected.SelfDocTTLSeconds {
-				t.Errorf("SelfDocTTLSeconds = %d, want %d", cfg.SelfDocTTLSeconds, tt.expected.SelfDocTTLSeconds)
 			}
 			if cfg.CleanupIntervalSeconds != tt.expected.CleanupIntervalSeconds {
 				t.Errorf("CleanupIntervalSeconds = %d, want %d", cfg.CleanupIntervalSeconds, tt.expected.CleanupIntervalSeconds)
