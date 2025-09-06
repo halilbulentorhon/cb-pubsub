@@ -12,11 +12,11 @@ import (
 )
 
 type shutdownManager struct {
-	ctx          context.Context
 	cancel       context.CancelFunc
 	signalCh     chan os.Signal
-	shutdownOnce sync.Once
 	logger       util.Logger
+	shutdownOnce sync.Once
+	ctx          context.Context
 }
 
 func newShutdownManager(logger util.Logger) *shutdownManager {

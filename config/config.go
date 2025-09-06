@@ -1,13 +1,13 @@
 package config
 
 type PubSubConfig struct {
+	CouchbaseConfig        CouchbaseConfig `json:"couchbaseConfig"`
 	PollIntervalSeconds    int             `json:"pollIntervalSeconds"`
 	CleanupIntervalSeconds int             `json:"cleanupIntervalSeconds"`
 	SubscribeRetryAttempts int             `json:"subscribeRetryAttempts"`
 	CleanupRetryAttempts   int             `json:"cleanupRetryAttempts"`
 	ShutdownTimeoutSec     int             `json:"shutdownTimeoutSec"`
 	InitTimeoutSec         int             `json:"initTimeoutSec"`
-	CouchbaseConfig        CouchbaseConfig `json:"couchbaseConfig"`
 }
 
 type CouchbaseConfig struct {

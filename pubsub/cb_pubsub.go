@@ -19,14 +19,14 @@ import (
 type cbPubSub[T any] struct {
 	cfg                  config.PubSubConfig
 	repository           repository.Repository
-	channel              string
-	instanceId           string
-	selfDocId            string
+	shutdownMgr          *shutdownManager
 	logger               util.Logger
 	subscribeRetryConfig util.RetryConfig
 	cleanupRetryConfig   util.RetryConfig
-	shutdownMgr          *shutdownManager
 	subscribeOnce        sync.Once
+	channel              string
+	instanceId           string
+	selfDocId            string
 	isSubscribed         bool
 }
 

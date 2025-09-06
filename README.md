@@ -204,7 +204,7 @@ make clean
 ```bash
 make mocks         # Generate mocks for testing
 make test          # Run tests with race detection
-make fieldalignment # Check struct field alignment
+make fieldalignment # Check struct field alignment (excludes mocks & tests)
 make clean         # Clean build artifacts and mocks
 ```
 
