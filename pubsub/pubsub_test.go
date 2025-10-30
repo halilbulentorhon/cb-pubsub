@@ -373,3 +373,34 @@ func TestPubSubHandler_Error(t *testing.T) {
 		t.Errorf("Handler returned error: %v, want %v", err, expectedErr)
 	}
 }
+
+func TestCbPubSub_Publish_SkipSelfInstance(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepository(ctrl)
+	pubsub := createTestCbPubSub(t, mockRepo)
+
+	assignmentDoc := model.AssignmentDoc{
+		"test-channel": {
+			"test-instance":  1234567890,
+			"other-instance": 1234567891,
+		},
+	}
+
+	mockRepo.EXPECT().
+		Get(gomock.Any(), constant.AssignmentDocName, gomock.Any()).
+		DoAndReturn(func(ctx context.Context, key string, result interface{}) (gocb.Cas, error) {
+			*(result.(*model.AssignmentDoc)) = assignmentDoc
+			return gocb.Cas(123), nil
+		})
+
+	mockRepo.EXPECT().
+		ArrayAppend(gomock.Any(), constant.SelfDocPrefix+"other-instance", constant.MessagesPath, "test-message").
+		Return(nil)
+
+	err := pubsub.Publish(context.Background(), "test-message")
+	if err != nil {
+		t.Errorf("Publish returned error: %v", err)
+	}
+}
