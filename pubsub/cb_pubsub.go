@@ -42,7 +42,10 @@ func (c *cbPubSub[T]) Publish(ctx context.Context, msg T) error {
 		return fmt.Errorf("publish error, channel not found")
 	}
 
-	for member, _ := range channel {
+	for member := range channel {
+		if member == c.instanceId {
+			continue
+		}
 		key := fmt.Sprintf("%s%s", constant.SelfDocPrefix, member)
 		err = c.repository.ArrayAppend(ctx, key, constant.MessagesPath, msg)
 		if errors.Is(err, gocb.ErrDocumentNotFound) {
@@ -192,7 +195,7 @@ func (c *cbPubSub[T]) performCleanup(ctx context.Context) error {
 
 	inactiveMembers := make([]string, 0)
 	for channel, memberMap := range allDoc {
-		for memberId, _ := range memberMap {
+		for memberId := range memberMap {
 			var res interface{}
 			_, err = c.repository.Get(ctx, fmt.Sprintf("%s%s", constant.SelfDocPrefix, memberId), &res)
 			if errors.Is(err, gocb.ErrDocumentNotFound) {
