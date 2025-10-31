@@ -9,10 +9,11 @@ const (
 )
 
 const (
-	MaxConsecutiveFailures    = 10
-	CleanupIntervalMultiplier = 1.5
-	MaxCleanupInterval        = 5 * time.Minute
-	SelfDocTtlSeconds         = 600
+	MaxConsecutiveFailures       = 10
+	CleanupIntervalMultiplier    = 1.5
+	MaxCleanupInterval           = 5 * time.Minute
+	SelfDocTtlSeconds            = 600
+	RemoveMultiplePathsBatchSize = 16
 )
 
 const (
