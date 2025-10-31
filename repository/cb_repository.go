@@ -7,6 +7,7 @@ import (
 
 	"github.com/couchbase/gocb/v2"
 	"github.com/halilbulentorhon/cb-pubsub/config"
+	"github.com/halilbulentorhon/cb-pubsub/constant"
 )
 
 type couchbaseRepository struct {
@@ -129,17 +130,25 @@ func (r *couchbaseRepository) RemoveMultiplePaths(ctx context.Context, key strin
 		return fmt.Errorf("no paths provided")
 	}
 
-	specs := make([]gocb.MutateInSpec, len(paths))
-	for i, path := range paths {
-		specs[i] = gocb.RemoveSpec(path, &gocb.RemoveSpecOptions{})
-	}
+	for i := 0; i < len(paths); i += constant.RemoveMultiplePathsBatchSize {
+		end := i + constant.RemoveMultiplePathsBatchSize
+		if end > len(paths) {
+			end = len(paths)
+		}
 
-	_, err := r.collection.MutateIn(key, specs, &gocb.MutateInOptions{
-		PreserveExpiry: true,
-		Context:        ctx,
-	})
-	if err != nil {
-		return fmt.Errorf("failed to remove paths %v from document with key '%s': %w", paths, key, err)
+		batch := paths[i:end]
+		specs := make([]gocb.MutateInSpec, len(batch))
+		for j, path := range batch {
+			specs[j] = gocb.RemoveSpec(path, &gocb.RemoveSpecOptions{})
+		}
+
+		_, err := r.collection.MutateIn(key, specs, &gocb.MutateInOptions{
+			PreserveExpiry: true,
+			Context:        ctx,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to remove paths batch %v from document with key '%s': %w", batch, key, err)
+		}
 	}
 
 	return nil
@@ -195,6 +204,9 @@ func NewCouchbaseRepository(cfg config.CouchbaseConfig) (Repository, error) {
 		TimeoutsConfig: gocb.TimeoutsConfig{
 			ConnectTimeout: connectTimeout,
 			KVTimeout:      operationTimeout,
+		},
+		InternalConfig: gocb.InternalConfig{
+			ConnectionBufferSize: 1 * 1024 * 1024,
 		},
 	}
 
